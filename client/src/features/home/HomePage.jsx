@@ -196,9 +196,9 @@ export default function HomePage() {
               and helps students find an available seat in seconds.
             </p>
             <div className="flex items-center justify-center gap-3 mb-8">
-              <a href="#libraries" className="rounded-lg bg-indigo-600 text-white text-sm font-medium px-5 py-2.5 hover:bg-indigo-700 shadow-sm">
+              <Link to="/libraries" className="rounded-lg bg-indigo-600 text-white text-sm font-medium px-5 py-2.5 hover:bg-indigo-700 shadow-sm">
                 Find a Library
-              </a>
+              </Link>
               <Link to="/register" className="rounded-lg border border-gray-300 bg-white/90 text-gray-700 text-sm font-medium px-5 py-2.5 hover:bg-white">
                 Register as Library
               </Link>
@@ -306,10 +306,10 @@ export default function HomePage() {
               ))}
             </div>
             <div className="text-center mt-6">
-              <a href="#libraries" className="inline-flex items-center gap-1.5 text-sm font-medium text-white hover:underline">
+              <Link to="/libraries" className="inline-flex items-center gap-1.5 text-sm font-medium text-white hover:underline">
                 Browse libraries
                 <ArrowRight className="w-4 h-4" strokeWidth={1.75} />
-              </a>
+              </Link>
             </div>
           </div>
         </section>
