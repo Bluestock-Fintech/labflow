@@ -5,6 +5,7 @@ const STORAGE_KEY = 'labflow_location_pref';
 export function useNearbyLibraries() {
   const [coords, setCoords] = useState(null);
   const [pincode, setPincode] = useState('');
+  const [city, setCity] = useState('');
   const [permissionState, setPermissionState] = useState('idle'); // idle | asked | granted | denied
 
   useEffect(() => {
@@ -15,11 +16,21 @@ export function useNearbyLibraries() {
         setPermissionState('granted');
       } else if (saved?.pincode) {
         setPincode(saved.pincode);
+      } else if (saved?.city) {
+        setCity(saved.city);
       }
     } catch {
       // ignore malformed local storage
     }
   }, []);
+
+  function persist(pref) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(pref));
+    } catch {
+      // ignore write failures (private browsing, quota)
+    }
+  }
 
   function requestLocation() {
     if (!navigator.geolocation) {
@@ -31,12 +42,10 @@ export function useNearbyLibraries() {
       (pos) => {
         const next = { lat: pos.coords.latitude, lng: pos.coords.longitude };
         setCoords(next);
+        setPincode('');
+        setCity('');
         setPermissionState('granted');
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify({ coords: next }));
-        } catch {
-          // ignore write failures (private browsing, quota)
-        }
+        persist({ coords: next });
       },
       () => setPermissionState('denied'),
       { timeout: 8000 }
@@ -46,18 +55,42 @@ export function useNearbyLibraries() {
   function useManualPincode(value) {
     setPincode(value);
     setCoords(null);
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ pincode: value }));
-    } catch {
-      // ignore
-    }
+    setCity('');
+    persist(value ? { pincode: value } : {});
+  }
+
+  function useCity(value) {
+    setCity(value);
+    setCoords(null);
+    setPincode('');
+    persist(value ? { city: value } : {});
+  }
+
+  function clear() {
+    setCoords(null);
+    setPincode('');
+    setCity('');
+    setPermissionState('idle');
+    persist({});
   }
 
   const queryParams = coords
     ? { lat: coords.lat, lng: coords.lng, radiusKm: 30 }
     : pincode
     ? { pincode }
+    : city
+    ? { city }
     : undefined;
 
-  return { coords, pincode, permissionState, requestLocation, useManualPincode, queryParams };
+  return {
+    coords,
+    pincode,
+    city,
+    permissionState,
+    requestLocation,
+    useManualPincode,
+    useCity,
+    clear,
+    queryParams,
+  };
 }

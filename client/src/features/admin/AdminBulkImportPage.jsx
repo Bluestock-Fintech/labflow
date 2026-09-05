@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { UploadCloud, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useBulkImportLibrariesMutation } from '../../app/api';
+import { MAJOR_CITIES } from '../../data/cities';
 
 const COLUMNS = ['name', 'mobile', 'email', 'address', 'city', 'area', 'pincode', 'latitude', 'longitude', 'map_link'];
 
@@ -57,7 +58,8 @@ export default function AdminBulkImportPage() {
       <p className="text-sm text-gray-500 mb-5">
         Paste CSV with a header row. Columns: <code className="text-xs bg-gray-100 px-1 py-0.5 rounded">{COLUMNS.join(', ')}</code>.
         Only <strong>name</strong> is required. Imported libraries are published as unclaimed listings (no owner) —
-        the real library can claim/register later.
+        the real library can claim/register later. Use the exact city name so the city filter matches it:{' '}
+        <strong>{MAJOR_CITIES.join(', ')}</strong>.
       </p>
 
       <textarea

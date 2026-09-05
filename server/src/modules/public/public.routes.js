@@ -9,11 +9,12 @@ import * as publicService from './public.service.js';
 const router = Router();
 
 router.get('/', asyncHandler(async (req, res) => {
-  const { lat, lng, pincode, radiusKm } = req.query;
+  const { lat, lng, pincode, city, radiusKm } = req.query;
   const libraries = await publicService.listPublicLibraries({
     lat: lat != null ? Number(lat) : undefined,
     lng: lng != null ? Number(lng) : undefined,
     pincode: pincode || undefined,
+    city: city || undefined,
     radiusKm: radiusKm != null ? Number(radiusKm) : undefined,
   });
   ok(res, libraries);

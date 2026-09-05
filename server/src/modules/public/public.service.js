@@ -57,7 +57,14 @@ function haversineKm(lat1, lng1, lat2, lng2) {
   return EARTH_RADIUS_KM * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-export async function listPublicLibraries({ lat, lng, pincode, radiusKm = 30 } = {}) {
+export async function listPublicLibraries({ lat, lng, pincode, city, radiusKm = 30 } = {}) {
+  const params = [];
+  let cityClause = '';
+  if (city) {
+    params.push(city);
+    cityClause = `AND l.city ILIKE $${params.length}`;
+  }
+
   const { rows } = await pool.query(
     `SELECT
        l.id, l.name, l.slug, l.city, l.area, l.mobile, l.pincode, l.latitude, l.longitude,
@@ -80,8 +87,9 @@ export async function listPublicLibraries({ lat, lng, pincode, radiusKm = 30 } =
        WHERE library_id = l.id AND status = 'ACTIVE'
        ORDER BY display_order LIMIT 1
      ) p ON true
-     WHERE l.status = 'PUBLISHED'
-     ORDER BY l.created_at DESC`
+     WHERE l.status = 'PUBLISHED' ${cityClause}
+     ORDER BY l.created_at DESC`,
+    params
   );
 
   // available_seats needs an actual per-seat count, not seat totals — patch it
