@@ -4,7 +4,9 @@ import { useGetPublicLibrariesQuery } from '../../app/api';
 import BrandLogo from '../../components/BrandLogo';
 import PublicBottomNav from '../../components/PublicBottomNav';
 import PublicSidebar from '../../components/PublicSidebar';
+import LocationPrompt from '../../components/LocationPrompt';
 import { SkeletonCard } from '../../components/Skeleton';
+import { useNearbyLibraries } from '../../hooks/useNearbyLibraries';
 
 function LibraryCard({ lib }) {
   const hasSeats = lib.total_seats > 0;
@@ -82,7 +84,8 @@ function LibraryCard({ lib }) {
 }
 
 export default function LibrariesListPage() {
-  const { data, isLoading } = useGetPublicLibrariesQuery();
+  const location = useNearbyLibraries();
+  const { data, isLoading } = useGetPublicLibrariesQuery(location.queryParams);
   const libraries = data?.data ?? [];
 
   return (
@@ -98,12 +101,14 @@ export default function LibrariesListPage() {
       </header>
 
       <main className="flex-1 max-w-5xl mx-auto w-full p-4">
-        <div className="mb-6">
+        <div className="mb-4">
           <h1 className="text-2xl font-semibold text-gray-900">All Libraries</h1>
           <p className="text-sm text-gray-500 mt-1">
             {isLoading ? 'Loading…' : `${libraries.length} librar${libraries.length === 1 ? 'y' : 'ies'} available`}
           </p>
         </div>
+
+        <LocationPrompt location={location} />
 
         {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

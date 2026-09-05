@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { LayoutGrid, Building2, Users, Menu, X, LogOut } from 'lucide-react';
+import { LayoutGrid, Building2, Users, Menu, X, LogOut, UploadCloud } from 'lucide-react';
 import { logout } from '../features/auth/authSlice';
 import BrandLogo from '../components/BrandLogo';
 
 const NAV = [
   { to: '/admin', label: 'Overview', icon: LayoutGrid, end: true },
   { to: '/admin/libraries', label: 'Libraries', icon: Building2 },
+  { to: '/admin/import', label: 'Bulk Import', icon: UploadCloud },
   { to: '/admin/customers', label: 'Customers', icon: Users },
 ];
 

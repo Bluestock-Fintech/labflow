@@ -26,6 +26,7 @@ import AdminOverviewPage from './features/admin/AdminOverviewPage';
 import AdminLibrariesPage from './features/admin/AdminLibrariesPage';
 import AdminLibraryDetailPage from './features/admin/AdminLibraryDetailPage';
 import AdminCustomersPage from './features/admin/AdminCustomersPage';
+import AdminBulkImportPage from './features/admin/AdminBulkImportPage';
 
 function RequireAuth({ children }) {
   const token = useSelector((s) => s.auth.token);
@@ -100,6 +101,7 @@ export default function App() {
           <Route index element={<AdminOverviewPage />} />
           <Route path="libraries" element={<AdminLibrariesPage />} />
           <Route path="libraries/:libraryId" element={<AdminLibraryDetailPage />} />
+          <Route path="import" element={<AdminBulkImportPage />} />
           <Route path="customers" element={<AdminCustomersPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />

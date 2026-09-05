@@ -3,7 +3,7 @@ import { asyncHandler } from '../../utils/asyncHandler.js';
 import { ok } from '../../utils/apiResponse.js';
 import { validate } from '../../middleware/validate.js';
 import { authenticate, authorize } from '../../middleware/auth.js';
-import { updateLibraryStatusSchema } from './admin.validation.js';
+import { updateLibraryStatusSchema, bulkImportLibrariesSchema } from './admin.validation.js';
 import * as adminService from './admin.service.js';
 
 const router = Router();
@@ -28,6 +28,11 @@ router.get('/libraries/:libraryId', asyncHandler(async (req, res) => {
 router.patch('/libraries/:libraryId/status', validate(updateLibraryStatusSchema), asyncHandler(async (req, res) => {
   const library = await adminService.updateLibraryStatus(req.params.libraryId, req.body.status);
   ok(res, library, 'Library status updated');
+}));
+
+router.post('/libraries/bulk-import', validate(bulkImportLibrariesSchema), asyncHandler(async (req, res) => {
+  const created = await adminService.bulkImportLibraries(req.body.libraries);
+  ok(res, created, `${created.length} libraries imported`);
 }));
 
 router.get('/customers', asyncHandler(async (req, res) => {

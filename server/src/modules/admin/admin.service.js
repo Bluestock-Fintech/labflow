@@ -1,5 +1,6 @@
 import { pool } from '../../config/db.js';
 import { ApiError } from '../../utils/apiResponse.js';
+import { generateUniqueSlug } from '../libraries/libraries.service.js';
 
 const LIBRARY_STATUSES = ['DRAFT', 'PUBLISHED', 'SUSPENDED', 'CLOSED'];
 
@@ -36,13 +37,13 @@ export async function listLibraries({ status } = {}) {
   }
 
   const { rows } = await pool.query(
-    `SELECT l.id, l.name, l.slug, l.email, l.mobile, l.address, l.city, l.area, l.status,
-            l.created_at,
+    `SELECT l.id, l.name, l.slug, l.email, l.mobile, l.address, l.city, l.area, l.pincode,
+            l.is_claimed, l.status, l.created_at,
             u.id AS owner_id, u.name AS owner_name, u.email AS owner_email, u.mobile AS owner_mobile,
             COALESCE(f.floor_count, 0)::int AS floor_count,
             COALESCE(f.total_seats, 0)::int AS total_seats
      FROM libraries l
-     JOIN users u ON u.id = l.owner_id
+     LEFT JOIN users u ON u.id = l.owner_id
      LEFT JOIN (
        SELECT library_id, COUNT(*) AS floor_count, SUM(total_seats) AS total_seats
        FROM floors
@@ -89,6 +90,27 @@ export async function updateLibraryStatus(libraryId, status) {
   );
   if (!rows[0]) throw new ApiError(404, 'NOT_FOUND', 'Library not found.');
   return rows[0];
+}
+
+export async function bulkImportLibraries(libraries) {
+  const created = [];
+  for (const lib of libraries) {
+    const slug = await generateUniqueSlug(lib.name);
+    const { rows } = await pool.query(
+      `INSERT INTO libraries
+         (owner_id, name, slug, email, mobile, address, city, area, pincode, map_link,
+          latitude, longitude, status, is_claimed)
+       VALUES (NULL, $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'PUBLISHED', false)
+       RETURNING *`,
+      [
+        lib.name, slug, lib.email ?? null, lib.mobile ?? null, lib.address ?? null,
+        lib.city ?? null, lib.area ?? null, lib.pincode ?? null, lib.map_link ?? null,
+        lib.latitude ?? null, lib.longitude ?? null,
+      ]
+    );
+    created.push(rows[0]);
+  }
+  return created;
 }
 
 export async function listCustomers() {

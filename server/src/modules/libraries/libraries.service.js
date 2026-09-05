@@ -2,7 +2,7 @@ import { pool } from '../../config/db.js';
 import { slugify } from '../../utils/slugify.js';
 import { ApiError } from '../../utils/apiResponse.js';
 
-async function generateUniqueSlug(base) {
+export async function generateUniqueSlug(base) {
   const root = slugify(base) || 'library';
   let slug = root;
   let attempt = 0;

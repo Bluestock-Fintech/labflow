@@ -78,7 +78,7 @@ export const api = createApi({
       invalidatesTags: ['Library'],
     }),
     getPublicLibraries: builder.query({
-      query: () => '/public/libraries',
+      query: (params) => ({ url: '/public/libraries', params }),
     }),
     getPublicLibrary: builder.query({
       query: (slug) => `/public/libraries/${slug}`,
@@ -107,6 +107,14 @@ export const api = createApi({
         url: `/admin/libraries/${libraryId}/status`,
         method: 'PATCH',
         body: { status },
+      }),
+      invalidatesTags: ['AdminLibrary', 'AdminOverview'],
+    }),
+    bulkImportLibraries: builder.mutation({
+      query: (libraries) => ({
+        url: '/admin/libraries/bulk-import',
+        method: 'POST',
+        body: { libraries },
       }),
       invalidatesTags: ['AdminLibrary', 'AdminOverview'],
     }),
@@ -186,6 +194,7 @@ export const {
   useGetAdminLibrariesQuery,
   useGetAdminLibraryQuery,
   useUpdateAdminLibraryStatusMutation,
+  useBulkImportLibrariesMutation,
   useGetAdminCustomersQuery,
   useGetOrdersQuery,
   useCreateOrderMutation,
