@@ -7,15 +7,35 @@ import PublicSidebar from '../../components/PublicSidebar';
 import LocationPrompt from '../../components/LocationPrompt';
 import { SkeletonCard } from '../../components/Skeleton';
 import { useNearbyLibraries } from '../../hooks/useNearbyLibraries';
+import { MAJOR_CITIES } from '../../data/cities';
 
-function LibraryCard({ lib }) {
+const CARD_GRADIENTS = [
+  'from-indigo-100 via-indigo-50 to-violet-100',
+  'from-emerald-100 via-teal-50 to-cyan-100',
+  'from-amber-100 via-orange-50 to-rose-100',
+  'from-sky-100 via-blue-50 to-indigo-100',
+  'from-fuchsia-100 via-pink-50 to-rose-100',
+  'from-lime-100 via-green-50 to-emerald-100',
+  'from-orange-100 via-amber-50 to-yellow-100',
+  'from-cyan-100 via-sky-50 to-blue-100',
+  'from-purple-100 via-violet-50 to-fuchsia-100',
+  'from-rose-100 via-red-50 to-orange-100',
+  'from-teal-100 via-emerald-50 to-lime-100',
+  'from-blue-100 via-indigo-50 to-purple-100',
+  'from-yellow-100 via-lime-50 to-green-100',
+  'from-pink-100 via-fuchsia-50 to-purple-100',
+  'from-red-100 via-rose-50 to-pink-100',
+];
+
+function LibraryCard({ lib, index = 0 }) {
   const hasSeats = lib.total_seats > 0;
   const isFull = hasSeats && lib.available_seats === 0;
+  const gradient = CARD_GRADIENTS[index % CARD_GRADIENTS.length];
 
   return (
     <div className="group bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-indigo-300 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
       <Link to={`/l/${lib.slug}`} className="block">
-        <div className="relative h-32 bg-gradient-to-br from-indigo-50 via-indigo-50 to-emerald-50 flex items-center justify-center overflow-hidden">
+        <div className={`relative h-32 bg-gradient-to-br ${gradient} flex items-center justify-center overflow-hidden`}>
           {lib.cover_photo ? (
             <img
               src={lib.cover_photo}
@@ -108,6 +128,32 @@ export default function LibrariesListPage() {
           </p>
         </div>
 
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 mb-3 -mx-1 px-1">
+          <button
+            onClick={() => location.useCity('')}
+            className={`shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium border transition ${
+              !location.city
+                ? 'bg-indigo-600 border-indigo-600 text-white'
+                : 'bg-white border-gray-200 text-gray-600 hover:border-indigo-300'
+            }`}
+          >
+            All Cities
+          </button>
+          {MAJOR_CITIES.map((c) => (
+            <button
+              key={c}
+              onClick={() => location.useCity(c)}
+              className={`shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium border transition ${
+                location.city === c
+                  ? 'bg-indigo-600 border-indigo-600 text-white'
+                  : 'bg-white border-gray-200 text-gray-600 hover:border-indigo-300'
+              }`}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
+
         <LocationPrompt location={location} />
 
         {isLoading ? (
@@ -120,8 +166,8 @@ export default function LibrariesListPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {libraries.map((lib) => (
-              <LibraryCard key={lib.id} lib={lib} />
+            {libraries.map((lib, i) => (
+              <LibraryCard key={lib.id} lib={lib} index={i} />
             ))}
           </div>
         )}
