@@ -188,32 +188,32 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-white/80" />
           <div className="relative w-full">
             <MarqueePoints />
-            <h1 className="text-3xl sm:text-5xl font-semibold text-gray-900 mb-3 max-w-lg mx-auto">
+            <h1 className="text-4xl sm:text-6xl font-bold tracking-tight leading-[1.1] text-gray-900 mb-4 max-w-xl mx-auto">
               Find and book study seats near you
             </h1>
-            <p className="text-gray-600 max-w-md mx-auto mb-6">
+            <p className="text-base sm:text-lg text-gray-600 leading-relaxed max-w-md mx-auto mb-8">
               LabFlow helps study libraries manage floors, seats and bookings —
               and helps students find an available seat in seconds.
             </p>
-            <div className="flex items-center justify-center gap-3 mb-8">
-              <Link to="/libraries" className="rounded-lg bg-indigo-600 text-white text-sm font-medium px-5 py-2.5 hover:bg-indigo-700 shadow-sm">
+            <div className="flex items-center justify-center gap-3 mb-10">
+              <Link to="/libraries" className="rounded-xl bg-indigo-600 text-white text-sm font-semibold px-6 py-3 hover:bg-indigo-700 shadow-sm transition-colors">
                 Find a Library
               </Link>
-              <Link to="/register" className="rounded-lg border border-gray-300 bg-white/90 text-gray-700 text-sm font-medium px-5 py-2.5 hover:bg-white">
+              <Link to="/register" className="rounded-xl border border-gray-300 bg-white/90 text-gray-700 text-sm font-semibold px-6 py-3 hover:bg-white transition-colors">
                 Register as Library
               </Link>
             </div>
-            <div className="max-w-md mx-auto rounded-2xl bg-white/30 backdrop-blur-md border border-white/50 text-gray-800 p-4 flex items-start gap-3 text-left shadow-lg">
+            <div className="max-w-md mx-auto rounded-2xl bg-white/30 backdrop-blur-md border border-white/50 text-gray-800 p-5 flex items-start gap-3 text-left shadow-lg">
               <Sparkles className="w-5 h-5 shrink-0 mt-0.5 text-indigo-500" strokeWidth={1.75} />
               <p className="text-sm leading-relaxed">{quote}</p>
             </div>
           </div>
         </section>
 
-        <section id="libraries" className="py-10 px-4">
+        <section id="libraries" className="py-16 sm:py-20 px-4">
           <div className="w-full">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900">Available Libraries</h2>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900">Available Libraries</h2>
               <span className="text-xs text-gray-400">{libraries.length} listed</span>
             </div>
 
@@ -242,10 +242,10 @@ export default function HomePage() {
                     );
                   })}
                 </div>
-                <div className="text-center mt-4">
+                <div className="text-center mt-6">
                   <Link
                     to="/libraries"
-                    className="inline-flex items-center gap-1.5 text-sm font-medium text-indigo-600 hover:underline"
+                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 hover:underline"
                   >
                     View more
                     <ArrowRight className="w-4 h-4" strokeWidth={1.75} />
@@ -256,7 +256,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="relative py-16 px-4 overflow-hidden">
+        <section className="relative py-20 sm:py-24 px-4 overflow-hidden">
           <div
             className="absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: "url('/website-section2.jpg')" }}
@@ -264,49 +264,49 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-gray-900/70" />
 
           <div className="relative max-w-5xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-xl font-semibold text-white">For Library Owners</h2>
-              <p className="text-sm text-white/70 mt-1">Run your whole library from your phone.</p>
+            <div className="text-center mb-10">
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">For Library Owners</h2>
+              <p className="text-sm sm:text-base text-white/70 mt-2">Run your whole library from your phone.</p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
               {OWNER_STEPS.map((step, i) => (
-                <div key={step.title} className="rounded-2xl border border-white/15 bg-white/10 backdrop-blur-sm p-5">
-                  <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center mb-3">
+                <div key={step.title} className="rounded-2xl border border-white/15 bg-white/10 backdrop-blur-sm p-6">
+                  <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center mb-4">
                     <step.icon className="w-5 h-5 text-white" strokeWidth={1.75} />
                   </div>
-                  <p className="text-xs font-semibold text-indigo-300 mb-1">STEP {i + 1}</p>
-                  <p className="font-medium text-white mb-1">{step.title}</p>
-                  <p className="text-sm text-white/70">{step.body}</p>
+                  <p className="text-xs font-semibold tracking-wider text-indigo-300 mb-1.5">STEP {i + 1}</p>
+                  <p className="font-semibold text-white mb-1.5">{step.title}</p>
+                  <p className="text-sm text-white/70 leading-relaxed">{step.body}</p>
                 </div>
               ))}
             </div>
-            <div className="text-center mt-6">
-              <Link to="/register" className="inline-flex items-center gap-1.5 text-sm font-medium text-white hover:underline">
+            <div className="text-center mt-8">
+              <Link to="/register" className="inline-flex items-center gap-1.5 text-sm font-semibold text-white hover:underline">
                 Register your library
                 <ArrowRight className="w-4 h-4" strokeWidth={1.75} />
               </Link>
             </div>
 
-            <div className="h-px bg-white/15 my-12" />
+            <div className="h-px bg-white/15 my-14" />
 
-            <div className="text-center mb-8">
-              <h2 className="text-xl font-semibold text-white">For Students</h2>
-              <p className="text-sm text-white/70 mt-1">Discover and book seats at libraries near you.</p>
+            <div className="text-center mb-10">
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">For Students</h2>
+              <p className="text-sm sm:text-base text-white/70 mt-2">Discover and book seats at libraries near you.</p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
               {STUDENT_STEPS.map((step, i) => (
-                <div key={step.title} className="rounded-2xl border border-white/15 bg-white/10 backdrop-blur-sm p-5">
-                  <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center mb-3">
+                <div key={step.title} className="rounded-2xl border border-white/15 bg-white/10 backdrop-blur-sm p-6">
+                  <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center mb-4">
                     <step.icon className="w-5 h-5 text-white" strokeWidth={1.75} />
                   </div>
-                  <p className="text-xs font-semibold text-emerald-300 mb-1">STEP {i + 1}</p>
-                  <p className="font-medium text-white mb-1">{step.title}</p>
-                  <p className="text-sm text-white/70">{step.body}</p>
+                  <p className="text-xs font-semibold tracking-wider text-emerald-300 mb-1.5">STEP {i + 1}</p>
+                  <p className="font-semibold text-white mb-1.5">{step.title}</p>
+                  <p className="text-sm text-white/70 leading-relaxed">{step.body}</p>
                 </div>
               ))}
             </div>
-            <div className="text-center mt-6">
-              <Link to="/libraries" className="inline-flex items-center gap-1.5 text-sm font-medium text-white hover:underline">
+            <div className="text-center mt-8">
+              <Link to="/libraries" className="inline-flex items-center gap-1.5 text-sm font-semibold text-white hover:underline">
                 Browse libraries
                 <ArrowRight className="w-4 h-4" strokeWidth={1.75} />
               </Link>
