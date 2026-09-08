@@ -19,6 +19,7 @@ import PublicSidebar from '../../components/PublicSidebar';
 import { useGetPublicLibrariesQuery } from '../../app/api';
 import { SkeletonCard } from '../../components/Skeleton';
 import quotes from '../../data/motivationalQuotes.json';
+import { MAJOR_CITIES } from '../../data/cities';
 
 function dashboardPathFor(role) {
   if (role === 'SUPER_ADMIN') return '/admin';
@@ -151,6 +152,54 @@ function MarqueePoints() {
   );
 }
 
+function HeroSearchBar() {
+  const navigate = useNavigate();
+  const [query, setQuery] = useState('');
+  const [city, setCity] = useState('');
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    if (query.trim()) params.set('q', query.trim());
+    if (city) params.set('city', city);
+    navigate(`/libraries${params.toString() ? `?${params.toString()}` : ''}`);
+  }
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-xl mx-auto mb-8 rounded-2xl bg-white shadow-lg border border-gray-200 p-2 flex flex-col sm:flex-row items-stretch gap-2"
+    >
+      <div className="relative flex-1">
+        <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" strokeWidth={1.75} />
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search libraries by name or area…"
+          className="w-full rounded-xl border-0 pl-9 pr-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+        />
+      </div>
+      <select
+        value={city}
+        onChange={(e) => setCity(e.target.value)}
+        className="rounded-xl border border-gray-200 sm:border-0 sm:border-l sm:rounded-none px-3 py-2.5 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/30"
+      >
+        <option value="">All Cities</option>
+        {MAJOR_CITIES.map((c) => (
+          <option key={c} value={c}>{c}</option>
+        ))}
+      </select>
+      <button
+        type="submit"
+        className="rounded-xl bg-indigo-600 text-white text-sm font-semibold px-5 py-2.5 hover:bg-indigo-700 shrink-0"
+      >
+        Search
+      </button>
+    </form>
+  );
+}
+
 export default function HomePage() {
   const { data, isLoading } = useGetPublicLibrariesQuery();
   const libraries = data?.data ?? [];
@@ -195,6 +244,7 @@ export default function HomePage() {
               LabFlow helps study libraries manage floors, seats and bookings —
               and helps students find an available seat in seconds.
             </p>
+            <HeroSearchBar />
             <div className="flex items-center justify-center gap-3 mb-10">
               <Link to="/libraries" className="rounded-xl bg-indigo-600 text-white text-sm font-semibold px-6 py-3 hover:bg-indigo-700 shadow-sm transition-colors">
                 Find a Library

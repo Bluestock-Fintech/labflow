@@ -1,5 +1,6 @@
-import { Link } from 'react-router-dom';
-import { MapPin, BookOpen, Phone, Armchair } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { MapPin, BookOpen, Phone, Armchair, Search, X } from 'lucide-react';
 import { useGetPublicLibrariesQuery } from '../../app/api';
 import BrandLogo from '../../components/BrandLogo';
 import PublicBottomNav from '../../components/PublicBottomNav';
@@ -104,9 +105,34 @@ function LibraryCard({ lib, index = 0 }) {
 }
 
 export default function LibrariesListPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const location = useNearbyLibraries();
   const { data, isLoading } = useGetPublicLibrariesQuery(location.queryParams);
-  const libraries = data?.data ?? [];
+  const allLibraries = data?.data ?? [];
+  const [query, setQuery] = useState(searchParams.get('q') || '');
+
+  // Pick up a city passed in from a link (e.g. the homepage search bar) once on load.
+  useEffect(() => {
+    const urlCity = searchParams.get('city');
+    if (urlCity) location.useCity(urlCity);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const next = new URLSearchParams();
+    if (query) next.set('q', query);
+    if (location.city) next.set('city', location.city);
+    setSearchParams(next, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query, location.city]);
+
+  const libraries = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return allLibraries;
+    return allLibraries.filter((lib) =>
+      [lib.name, lib.area, lib.city].filter(Boolean).some((v) => v.toLowerCase().includes(q))
+    );
+  }, [allLibraries, query]);
 
   return (
     <div className="min-h-screen flex bg-gray-50">
@@ -126,6 +152,26 @@ export default function LibrariesListPage() {
           <p className="text-sm text-gray-500 mt-1">
             {isLoading ? 'Loading…' : `${libraries.length} librar${libraries.length === 1 ? 'y' : 'ies'} available`}
           </p>
+        </div>
+
+        <div className="relative mb-3">
+          <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" strokeWidth={1.75} />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search libraries by name or area…"
+            className="w-full rounded-xl border border-gray-200 bg-white pl-9 pr-9 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400"
+          />
+          {query && (
+            <button
+              onClick={() => setQuery('')}
+              aria-label="Clear search"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              <X className="w-4 h-4" strokeWidth={1.75} />
+            </button>
+          )}
         </div>
 
         <div className="flex items-center gap-2 overflow-x-auto pb-1 mb-3 -mx-1 px-1">
@@ -162,7 +208,11 @@ export default function LibrariesListPage() {
           </div>
         ) : libraries.length === 0 ? (
           <div className="bg-white rounded-2xl border border-gray-200 border-dashed p-10 text-center">
-            <p className="text-sm text-gray-500">No libraries published yet — check back soon.</p>
+            <p className="text-sm text-gray-500">
+              {query
+                ? 'No libraries match your search — try a different name or city.'
+                : 'No libraries published yet — check back soon.'}
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
